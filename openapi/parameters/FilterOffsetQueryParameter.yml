@@ -1,0 +1,12 @@
+FilterOffsetQueryParameter:
+  in: query
+  name: offset
+  schema:
+    type: integer
+    format: int64
+    description: The integer which offsets the response array
+    example: 1
+    default: 1
+    minimum: 1
+  required: false
+  description: Offset the response by the integer given. If provided, needs to be above 0.

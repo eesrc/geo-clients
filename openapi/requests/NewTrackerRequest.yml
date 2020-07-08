@@ -1,0 +1,9 @@
+NewTrackerRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      example: My new tracker name
+    description:
+      type: string
+      example: My new tracker description

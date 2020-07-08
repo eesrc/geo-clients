@@ -1,0 +1,73 @@
+SubscriptionResponse:
+  type: object
+  description: SubscriptionResponse is the response you get when interacting with the Subscription API
+  properties:
+    id:
+      type: integer
+      description: The ID of the Subscription
+      format: int64
+      example: 1
+    teamId:
+      type: integer
+      description: The ID of the Team for the Subscription
+      format: int64
+      example: 1
+    name:
+      type: string
+      description: The name of the Subscription
+      example: My subscription name
+    description:
+      type: string
+      description: The description of the Subscription
+      example: My subscription description
+    active:
+      type: boolean
+      description: Boolean showing whether the subscription is active
+      example: false
+    output:
+      $ref: ../GeoOAS3.yml#/components/schemas/SubscriptionOutput
+    triggerCriteria:
+      type: object
+      description: The trigger criterias for a Subscription
+      properties:
+        triggerTypes:
+          $ref: ../enums/SubscriptionTriggerType.yml#/SubscriptionTriggerTypeArray
+        confidence:
+          $ref: ../enums/SubscriptionConfidenceType.yml#/SubscriptionConfidenceTypeArray
+      required:
+        - triggerTypes
+        - confidence
+    shapeCollectionId:
+      type: integer
+      format: int64
+      description: The ID of the ShapeCollection containing shapes to subscribe to
+      example: 1
+    trackable:
+      type: object
+      description: Details of which entities the subscription tracks
+      properties:
+        id:
+          type: number
+          format: int64
+          description: The ID of the trackable entity
+          example: 1
+        type:
+          $ref: ../enums/SubscriptionTrackerType.yml#/SubscriptionTrackerType
+      required:
+        - id
+        - type
+  required:
+    - id
+    - teamId
+    - name
+    - description
+    - active
+    - output
+    - triggerCriteria
+    - trackable
+    - shapeCollectionId
+
+SubscriptionResponseArray:
+  type: array
+  items:
+    $ref: "#/SubscriptionResponse"

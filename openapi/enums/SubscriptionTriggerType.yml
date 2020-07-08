@@ -1,0 +1,18 @@
+SubscriptionTriggerTypeArray:
+  type: array
+  description: The different types of triggers that should trigger the Subscription
+  items:
+    $ref: "#/SubscriptionTriggerType"
+  example:
+    - entered
+    - exited
+
+SubscriptionTriggerType:
+  type: string
+  enum:
+    - inside
+    - outside
+    - entered
+    - exited
+  example:
+    - entered

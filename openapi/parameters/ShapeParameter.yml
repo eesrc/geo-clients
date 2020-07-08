@@ -1,0 +1,9 @@
+ShapeParameter:
+  in: path
+  name: shapeId
+  schema:
+    type: integer
+    format: int64
+    example: 1
+  required: true
+  description: The ID of the Shape

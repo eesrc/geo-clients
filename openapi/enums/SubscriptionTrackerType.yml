@@ -1,0 +1,6 @@
+SubscriptionTrackerType:
+  type: string
+  enum:
+    - tracker
+    - collection
+  example: collection

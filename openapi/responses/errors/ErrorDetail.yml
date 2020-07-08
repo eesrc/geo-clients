@@ -1,0 +1,14 @@
+ErrorDetail:
+  type: object
+  properties:
+    field:
+      type: string
+      example: exampleField
+      description: String representation of the field which has an error
+    reason:
+      type: string
+      example: Example reason connected to the exampleField
+      description: Reason to what is wrong with the field given in `field`
+  required:
+    - field
+    - reason

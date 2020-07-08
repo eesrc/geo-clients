@@ -1,0 +1,10 @@
+FilterUntilQueryParameter:
+  in: query
+  name: until
+  schema:
+    type: integer
+    format: int64
+    example: 1571138625603
+    minimum: 0
+  required: false
+  description: Fetch data until given UNIX timestamp

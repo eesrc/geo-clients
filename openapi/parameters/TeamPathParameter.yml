@@ -1,0 +1,9 @@
+TeamPathParameter:
+  in: path
+  name: teamId
+  schema:
+    type: integer
+    format: int64
+    example: 1
+  required: true
+  description: The ID of the Team

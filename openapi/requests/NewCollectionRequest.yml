@@ -1,0 +1,19 @@
+NewCollectionRequest:
+  type: object
+  description: A NewCollectionRequest is used when creating a new Collection
+  properties:
+    name:
+      type: string
+      example: My new collection name
+      description: The name of the new Collection
+    description:
+      type: string
+      example: My new collection description
+      description: The description of the new Collection
+    teamId:
+      type: integer
+      format: int64
+      example: 1
+      description: The Team ID of the new Collection
+  required:
+    - teamId

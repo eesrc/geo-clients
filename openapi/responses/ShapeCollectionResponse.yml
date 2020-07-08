@@ -1,0 +1,32 @@
+ShapeCollectionResponse:
+  type: object
+  description: ShapeCollectionResponse is the response you get when interacting with the ShapeCollection API
+  properties:
+    id:
+      type: integer
+      format: int64
+      example: 1
+      description: The ID of the ShapeCollection
+    teamId:
+      type: integer
+      format: int64
+      example: 1
+      description: The Team ID of the ShapeCollection
+    name:
+      type: string
+      example: My shape collection
+      description: The name of the ShapeCollection
+    description:
+      type: string
+      example: My shape collection description
+      description: The description of the ShapeCollection
+  required:
+    - id
+    - teamId
+    - name
+    - description
+
+ShapeCollectionResponseArray:
+  type: array
+  items:
+    $ref: "#/ShapeCollectionResponse"

@@ -1,0 +1,4 @@
+NewShapeRequest:
+  type: object
+  description: New GeoJSON Feature to create
+  additionalProperties: true

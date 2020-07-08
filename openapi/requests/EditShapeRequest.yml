@@ -1,0 +1,4 @@
+EditShapeRequest:
+  type: object
+  description: GeoJSON Feature to replace existing GeoJSON Feature with
+  additionalProperties: true

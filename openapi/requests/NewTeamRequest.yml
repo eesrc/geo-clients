@@ -1,0 +1,12 @@
+NewTeamRequest:
+  type: object
+  description: NewTeamRequest is a object to be used when creating a new Team
+  properties:
+    name:
+      type: string
+      example: My new Team name
+      description: The name of the new Team
+    description:
+      type: string
+      example: My new Team description
+      description: The description of the new Team

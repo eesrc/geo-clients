@@ -1,0 +1,20 @@
+EditTrackerRequest:
+  type: object
+  properties:
+    collectionId:
+      type: integer
+      format: int64
+      example: 1
+      description: The updated Collection ID of the Tracker
+    name:
+      type: string
+      example: My tracker name
+      description: The updated Tracker name
+    description:
+      type: string
+      example: My tracker description
+      description: The updated Tracker description
+  required:
+    - collectionId
+    - name
+    - description

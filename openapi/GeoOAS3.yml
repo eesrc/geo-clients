@@ -1,0 +1,1475 @@
+openapi: "3.0.2"
+
+info:
+  title: Geo API
+  description: |
+    The Geo API provides access to the different features of the Telenor Geo server, including capabilities such as pub/sub, geofencing and storage of tracking data.
+  license:
+    name: Apache 2.0
+  version: "v0.1"
+
+servers:
+  - description: Production instance of geo
+    url: https://geo.exploratory.engineering/api/v1
+  - description: Local instance of geo
+    url: http://localhost:8080/api/v1
+
+tags:
+  - name: Team
+    description: This section includes the operations concerning Teams for the Geo server
+  - name: Collection
+    description: This section includes the operations concerning Collections for the Geo server
+  - name: Tracker
+    description: This section includes the operations concerning Trackers for the Geo server
+  - name: Subscription
+    description: This section includes the operations concerning Subscriptions for the Geo server
+  - name: ShapeCollection
+    description: This section includes the operations concerning ShapeCollections for the Geo server
+  - name: Position
+    description: This section includes the operations concerning Position creation and retrieval for the Geo server
+  - name: Clients introduction
+    description: |
+      Clients are available for different languages and are meant for you to get started quickly in integrating towards the Geo APIs They and abstracts away the http interaction and wraps it into more approachable methods. The clients are automatically generated from the OpenAPI Specification which can be downloaded separately if you want to generate different types of clients.
+  - name: TypeScript fetch client
+    description: |
+      A Typescript client is available for use and can be be installed by typing
+
+      ```
+      npm i -D @exploratoryengineering/geoclient-ts
+      ```
+
+      ### Example usage
+
+      First you need to import the API you're interested in and instanciate an API instance.
+
+      ```
+      import { CollectionApi, CollectionApiApiKeys } from "@exploratoryengineering/geoclient-ts"
+
+      const collectionApi = new CollectionApi();
+      collectionApi.setApiKey(CollectionApiApiKeys.APIToken, "Bearer MY");
+      ```
+
+      Now you can use the instance to access the different methods such as fetching, editing and deleting a Collection.
+
+      ```
+      await collectionApi.getCollection(1).then(response => {
+        console.log(response.body); // Collection with ID 1
+      });
+      ```
+
+      #### Error handling
+
+      Not everything goes as planned every time, and errors can be handled as follows. See the documentation for the endpoint to see which exceptions you might occur.
+
+      ```
+      const nonExistingId = 1337;
+
+      await collectionApi.getCollection(nonExistingId).then(response => {
+        console.log(response.body); // Collection with ID 1337?
+      }).catch(error => {
+        console.log(error.response.body) // NotFoundResponse for ID 1337
+      });
+      ```
+  - name: Go client
+    description: |
+      A Golang client is available for use and can be installed by typing
+
+      ```
+      go get github.com/exploratoryengineering/geoclient-go
+      ```
+
+      ### Example usage
+
+      First you need to instanciate a client and have an authorize context
+
+      ```
+      import geoclient "github.com/exploratoryengineering/geoclient-go"
+
+      client := geoclient.NewAPIClient(
+        geoclient.NewConfiguration(),
+      )
+
+      auth := context.WithValue(context.Background(), geoclient.ContextAPIKey, geoclient.APIKey{
+        Key:    "MY_API_KEY",
+        Prefix: "Bearer",
+      })
+      ```
+
+      Now you can use the client to access the different methods such as fetching, editing and deleting a Collection.
+
+      ```
+      collection, response, err := client.CollectionApi.GetCollection(auth, 1)
+      fmt.Println(collection) // Collection with ID 1
+      ```
+
+      #### Error handling
+
+      Not everything goes as planned every time, and errors can be handled as follows. See the documentation for the endpoint to see which exceptions you might occur.
+
+      ```
+      nonExistingId := 1337
+      collection, response, err := client.CollectionApi.GetCollection(auth, nonExistingId) // Returns Collection?
+
+      if err != nil {
+        // First we fetch the generic error out of the error returned from the request
+        if genericError, ok := err.(geoclient.GenericSwaggerError); ok {
+          // Handle 404 - Not found
+          if response.StatusCode == http.StatusNotFound {
+            notFoundResponse, validNotFound := genericError.Model().(geoclient.NotFoundResponse) // NotFoundResponse
+            // Do what you want with the NotFoundResponse ...
+          }
+          // Handle other errors ...
+        }
+      }
+      ```
+
+x-tagGroups:
+  - name: API Endpoints
+    tags:
+      - Profile
+      - Team
+      - Collection
+      - Tracker
+      - Position
+      - Subscription
+      - ShapeCollection
+  - name: Integration
+    tags:
+      - Clients introduction
+      - TypeScript fetch client
+      - Go client
+
+components:
+  securitySchemes:
+    APIToken:
+      $ref: ./security/APIToken.yml#/APIToken
+  parameters:
+    CollectionPathParameter:
+      $ref: ./parameters/CollectionPathParameter.yml#/CollectionPathParameter
+    TeamPathParameter:
+      $ref: ./parameters/TeamPathParameter.yml#/TeamPathParameter
+    TrackerPathParameter:
+      $ref: ./parameters/TrackerPathParameter.yml#/TrackerPathParameter
+    SubscriptionPathParameter:
+      $ref: ./parameters/SubscriptionPathParameter.yml#/SubscriptionPathParameter
+    ShapeCollectionPathParameter:
+      $ref: ./parameters/ShapeCollectionPathParameter.yml#/ShapeCollectionPathParameter
+    ShapeParameter:
+      $ref: ./parameters/ShapeParameter.yml#/ShapeParameter
+    FilterLimitQueryParameter:
+      $ref: ./parameters/FilterLimitQueryParameter.yml#/FilterLimitQueryParameter
+    FilterOffsetQueryParameter:
+      $ref: ./parameters/FilterOffsetQueryParameter.yml#/FilterOffsetQueryParameter
+    FilterSinceQueryParameter:
+      $ref: ./parameters/FilterSinceQueryParameter.yml#/FilterSinceQueryParameter
+    FilterUntilQueryParameter:
+      $ref: ./parameters/FilterUntilQueryParameter.yml#/FilterUntilQueryParameter
+  schemas:
+    # Error responses
+    BadRequestResponse:
+      $ref: ./responses/errors/BadRequestResponse.yml#/BadRequestResponse
+    NotFoundResponse:
+      $ref: ./responses/errors/NotFoundResponse.yml#/NotFoundResponse
+    UnauthorizedResponse:
+      $ref: ./responses/errors/UnauthorizedResponse.yml#/UnauthorizedResponse
+
+    # Profile
+    ProfileResponse:
+      $ref: ./responses/ProfileResponse.yml#/ProfileResponse
+
+    # Team
+    TeamResponse:
+      $ref: ./responses/TeamResponse.yml#/TeamResponse
+    TeamResponseArray:
+      $ref: ./responses/TeamResponse.yml#/TeamResponseArray
+    NewTeamRequest:
+      $ref: ./requests/NewTeamRequest.yml#/NewTeamRequest
+    EditTeamRequest:
+      $ref: ./requests/EditTeamRequest.yml#/EditTeamRequest
+
+    # Collection
+    CollectionResponse:
+      $ref: ./responses/CollectionResponse.yml#/CollectionResponse
+    CollectionResponseArray:
+      $ref: ./responses/CollectionResponse.yml#/CollectionResponseArray
+    NewCollectionRequest:
+      $ref: ./requests/NewCollectionRequest.yml#/NewCollectionRequest
+    EditCollectionRequest:
+      $ref: ./requests/EditCollectionRequest.yml#/EditCollectionRequest
+
+    # Tracker
+    TrackerResponse:
+      $ref: ./responses/TrackerResponse.yml#/TrackerResponse
+    TrackerResponseArray:
+      $ref: ./responses/TrackerResponse.yml#/TrackerResponseArray
+    NewTrackerRequest:
+      $ref: ./requests/NewTrackerRequest.yml#/NewTrackerRequest
+    EditTrackerRequest:
+      $ref: ./requests/EditTrackerRequest.yml#/EditTrackerRequest
+
+    # Position
+    PositionResponse:
+      $ref: ./responses/PositionResponse.yml#/PositionResponse
+    PositionResponseArray:
+      $ref: ./responses/PositionResponse.yml#/PositionResponseArray
+    NewPositionRequest:
+      $ref: ./requests/NewPositionRequest.yml#/NewPositionRequest
+
+    # Subscription (SubscriptionOutput does not yet support partialing)
+    SubscriptionOutput:
+      description: The output for the Subscription
+      type: object
+      oneOf:
+        - $ref: "#/components/schemas/WebhookOutput"
+        - $ref: "#/components/schemas/WebSocketOutput"
+        - $ref: "#/components/schemas/SMSOutput"
+      discriminator:
+        propertyName: type
+        mapping:
+          webhook: "#/components/schemas/WebhookOutput"
+          websocket: "#/components/schemas/WebSocketOutput"
+          sms: "#/components/schemas/SMSOutput"
+    WebhookOutput:
+      description: Output for Webhook
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              description: The type of output
+              example: webhook
+            config:
+              type: object
+              description: Webhook configuration
+              properties:
+                host:
+                  type: string
+                  description: The webhook host endpoint
+                  example: "https://example.com"
+              required:
+                - host
+          required:
+            - type
+            - config
+    WebSocketOutput:
+      description: Output for websocket
+      properties:
+        type:
+          type: string
+          description: The type of output
+          example: websocket
+      required:
+        - type
+    SMSOutput:
+      description: Output for SMS
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              description: The type of output
+              example: sms
+            config:
+              type: object
+              description: SMS configuration
+              properties:
+                twilioApiKey:
+                  type: string
+                  description: Twilio API Key to be used when sending SMS
+                  example: "AAAKAAKACCAKJHASBDDAJJA"
+                receivePhoneNumber:
+                  type: string
+                  description: Phone number which will receive the notifications
+              required:
+                - twilioApiKey
+                - receivePhoneNumber
+          required:
+            - type
+            - config
+    SubscriptionResponse:
+      $ref: ./responses/SubscriptionResponse.yml#/SubscriptionResponse
+    SubscriptionResponseArray:
+      $ref: ./responses/SubscriptionResponse.yml#/SubscriptionResponseArray
+    NewSubscriptionRequest:
+      $ref: ./requests/NewSubscriptionRequest.yml#/NewSubscriptionRequest
+    EditSubscriptionRequest:
+      $ref: ./requests/EditSubscriptionRequest.yml#/EditSubscriptionRequest
+
+    # ShapeCollection
+    ShapeCollectionResponse:
+      $ref: ./responses/ShapeCollectionResponse.yml#/ShapeCollectionResponse
+    ShapeCollectionResponseArray:
+      $ref: ./responses/ShapeCollectionResponse.yml#/ShapeCollectionResponseArray
+    NewShapeCollectionRequest:
+      $ref: ./requests/NewShapeCollectionRequest.yml#/NewShapeCollectionRequest
+    EditShapeCollectionRequest:
+      $ref: ./requests/EditShapeCollectionRequest.yml#/EditShapeCollectionRequest
+
+    # Shape
+    ShapeResponse:
+      $ref: ./responses/ShapeResponse.yml#/ShapeResponse
+    ShapeResponseArray:
+      $ref: ./responses/ShapeResponse.yml#/ShapeResponseArray
+    NewShapeRequest:
+      $ref: ./requests/NewShapeRequest.yml#/NewShapeRequest
+    EditShapeRequest:
+      $ref: ./requests/EditShapeRequest.yml#/EditShapeRequest
+paths:
+  # Profile
+  /profile:
+    get:
+      operationId: getProfile
+      security:
+        - APIToken: []
+      tags:
+        - Profile
+      summary: Get authenticated Profile
+      description: Get authenticated Profile
+      responses:
+        "200":
+          description: Get authenticated Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+  # Teams
+  /teams:
+    get:
+      operationId: getTeams
+      security:
+        - APIToken: []
+      tags:
+        - Team
+      summary: Get all Teams
+      description: Get all Teams
+      parameters:
+        - $ref: "#/components/parameters/FilterLimitQueryParameter"
+        - $ref: "#/components/parameters/FilterOffsetQueryParameter"
+      responses:
+        "200":
+          description: Get all Teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamResponseArray"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+    post:
+      operationId: createTeam
+      security:
+        - APIToken: []
+      tags:
+        - Team
+      summary: Create a new Team
+      description: Create a new Team
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewTeamRequest"
+      responses:
+        "201":
+          description: Returns newly created Team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamResponse"
+        "400":
+          description: Bad request when trying to create Team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+  /teams/{teamId}:
+    get:
+      operationId: getTeam
+      security:
+        - APIToken: []
+      tags:
+        - Team
+      summary: Get a single Team
+      description: Get a single Team
+      parameters:
+        - $ref: "#/components/parameters/TeamPathParameter"
+      responses:
+        "200":
+          description: Returns a Team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamResponse"
+        "404":
+          description: No Team found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+    put:
+      operationId: updateTeam
+      security:
+        - APIToken: []
+      tags:
+        - Team
+      summary: Update a Team
+      description: Update a Team
+      parameters:
+        - $ref: "#/components/parameters/TeamPathParameter"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditTeamRequest"
+      responses:
+        "200":
+          description: Returns an updated Team upon successful update
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamResponse"
+        "400":
+          description: Bad request when trying to update Team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Team found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    delete:
+      operationId: deleteTeam
+      security:
+        - APIToken: []
+      tags:
+        - Team
+      summary: Delete a Team
+      description: Delete a Team
+      parameters:
+        - $ref: "#/components/parameters/TeamPathParameter"
+      responses:
+        "204":
+          description: Team was deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Team found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+
+  # Collections
+  /collections:
+    get:
+      operationId: getCollections
+      security:
+        - APIToken: []
+      tags:
+        - Collection
+      summary: Get all Collections
+      description: Get all Collections
+      parameters:
+        - $ref: "#/components/parameters/FilterLimitQueryParameter"
+        - $ref: "#/components/parameters/FilterOffsetQueryParameter"
+      responses:
+        "200":
+          description: Returns all Collections
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionResponseArray"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+    post:
+      operationId: createCollection
+      security:
+        - APIToken: []
+      tags:
+        - Collection
+      summary: Create a new Collection
+      description: Create a new Collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewCollectionRequest"
+      responses:
+        "201":
+          description: Returns newly created Collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionResponse"
+        "400":
+          description: Bad request when trying to create Collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+  /collections/{collectionId}:
+    get:
+      operationId: getCollection
+      security:
+        - APIToken: []
+      tags:
+        - Collection
+      summary: Get a single Collection
+      description: Get a single Collection
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+      responses:
+        "200":
+          description: Returns a Collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    put:
+      operationId: updateCollection
+      security:
+        - APIToken: []
+      tags:
+        - Collection
+      summary: Update a Collection
+      description: Update a new Collection
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditCollectionRequest"
+      responses:
+        "200":
+          description: Returns updated Collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionResponse"
+        "400":
+          description: Bad request when trying to create Collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    delete:
+      operationId: deleteCollection
+      security:
+        - APIToken: []
+      tags:
+        - Collection
+      summary: Delete a Collection
+      description: Delete a Collection
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+      responses:
+        "204":
+          description: Collection was deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+
+  # Trackers
+  /collections/{collectionId}/trackers:
+    get:
+      operationId: getTrackers
+      security:
+        - APIToken: []
+      tags:
+        - Tracker
+      summary: Get all Trackers
+      description: Get all Trackers
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+        - $ref: "#/components/parameters/FilterLimitQueryParameter"
+        - $ref: "#/components/parameters/FilterOffsetQueryParameter"
+      responses:
+        "200":
+          description: Returns all trackers for collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackerResponseArray"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    post:
+      operationId: createTracker
+      security:
+        - APIToken: []
+      tags:
+        - Tracker
+      summary: Create a new Tracker
+      description: Create a new Tracker
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewTrackerRequest"
+      responses:
+        "201":
+          description: Returns newly created Tracker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackerResponse"
+        "400":
+          description: Bad request when trying to create Tracker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+  /collections/{collectionId}/trackers/{trackerId}:
+    get:
+      operationId: getTracker
+      security:
+        - APIToken: []
+      tags:
+        - Tracker
+      summary: Get a single Tracker
+      description: Get a single Tracker
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+        - $ref: "#/components/parameters/TrackerPathParameter"
+      responses:
+        "200":
+          description: Returns a Tracker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackerResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection or Tracker found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    put:
+      operationId: updateTracker
+      security:
+        - APIToken: []
+      tags:
+        - Tracker
+      summary: Update a Tracker
+      description: Update a Tracker
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+        - $ref: "#/components/parameters/TrackerPathParameter"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditTrackerRequest"
+      responses:
+        "201":
+          description: Returns the updated Tracker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackerResponse"
+        "400":
+          description: Bad request when trying to update Tracker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection or Tracker found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    delete:
+      operationId: deleteTracker
+      security:
+        - APIToken: []
+      tags:
+        - Tracker
+      summary: Delete a Tracker
+      description: Delete a Tracker
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+        - $ref: "#/components/parameters/TrackerPathParameter"
+      responses:
+        "204":
+          description: Tracker deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection or Tracker found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+  /collections/{collectionId}/trackers/{trackerId}/positions:
+    get:
+      operationId: getPositions
+      security:
+        - APIToken: []
+      tags:
+        - Position
+      summary: Get all Positions for Tracker
+      description: Get all Positions for Tracker
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+        - $ref: "#/components/parameters/TrackerPathParameter"
+        - $ref: "#/components/parameters/FilterLimitQueryParameter"
+        - $ref: "#/components/parameters/FilterOffsetQueryParameter"
+      responses:
+        "200":
+          description: Returns all Positions for Tracker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PositionResponseArray"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Collection or Tracker found with given IDs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    post:
+      operationId: createPosition
+      security:
+        - APIToken: []
+      tags:
+        - Position
+      summary: Create a new position for the Tracker
+      description: Create a new position for the Tracker
+      parameters:
+        - $ref: "#/components/parameters/CollectionPathParameter"
+        - $ref: "#/components/parameters/TrackerPathParameter"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPositionRequest"
+      responses:
+        "201":
+          description: Returns newly created Position
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PositionResponse"
+        "400":
+          description: Bad request when trying to create Position
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+  # Subscriptions
+  /subscriptions:
+    get:
+      operationId: getSubscriptions
+      security:
+        - APIToken: []
+      tags:
+        - Subscription
+      summary: Get all Subscriptions
+      description: Get all Subscriptions
+      parameters:
+        - $ref: "#/components/parameters/FilterLimitQueryParameter"
+        - $ref: "#/components/parameters/FilterOffsetQueryParameter"
+      responses:
+        "200":
+          description: Returns all Subscriptions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponseArray"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+    post:
+      operationId: createSubscription
+      security:
+        - APIToken: []
+      tags:
+        - Subscription
+      summary: Create a new Subscription
+      description: Create a new Subscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewSubscriptionRequest"
+      responses:
+        "201":
+          description: Returns newly created Subscription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "400":
+          description: Bad request when trying to create Subscription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+  /subscriptions/{subscriptionId}:
+    get:
+      operationId: getSubscription
+      security:
+        - APIToken: []
+      tags:
+        - Subscription
+      summary: Get a single Subscription
+      description: Get a single Subscription
+      parameters:
+        - $ref: "#/components/parameters/SubscriptionPathParameter"
+      responses:
+        "200":
+          description: Returns a Subscription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Subscription found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    put:
+      operationId: updateSubscription
+      security:
+        - APIToken: []
+      tags:
+        - Subscription
+      summary: Update a Subscription
+      description: Update a Subscription
+      parameters:
+        - $ref: "#/components/parameters/SubscriptionPathParameter"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditSubscriptionRequest"
+      responses:
+        "200":
+          description: Returns the updated Subscription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "400":
+          description: Bad request when trying to update Subscription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Subscription found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    delete:
+      operationId: deleteSubscription
+      security:
+        - APIToken: []
+      tags:
+        - Subscription
+      summary: Delete a Subscription
+      description: Delete a Subscription
+      parameters:
+        - $ref: "#/components/parameters/SubscriptionPathParameter"
+      responses:
+        "204":
+          description: Successfully deleted Subscription
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No Subscription found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+  # ShapeCollections
+  /shapecollections:
+    get:
+      operationId: getShapeCollections
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Get all ShapeCollections
+      description: Get all ShapeCollections
+      parameters:
+        - $ref: "#/components/parameters/FilterLimitQueryParameter"
+        - $ref: "#/components/parameters/FilterOffsetQueryParameter"
+      responses:
+        "200":
+          description: Returns all ShapeCollections
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShapeCollectionResponseArray"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+    post:
+      operationId: createShapeCollection
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewShapeCollectionRequest"
+      summary: Create a new ShapeCollection
+      description: Create a new ShapeCollection
+      responses:
+        "201":
+          description: Returns newly created ShapeCollection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShapeCollectionResponse"
+        "400":
+          description: Bad request when trying to create ShapeCollection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+  /shapecollections/{shapeCollectionId}:
+    get:
+      operationId: getShapeCollection
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Get a single ShapeCollection
+      description: Get a single ShapeCollection
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+      responses:
+        "200":
+          description: Returns a ShapeCollection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShapeCollectionResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    put:
+      operationId: updateShapeCollection
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditShapeCollectionRequest"
+      summary: Edit a ShapeCollection
+      description: Edit a ShapeCollection
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+      responses:
+        "200":
+          description: Returns the updated ShapeCollection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShapeCollectionResponse"
+        "400":
+          description: Bad request when trying to update ShapeCollection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    delete:
+      operationId: deleteShapeCollection
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Delete a ShapeCollection
+      description: Delete a ShapeCollection
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+      responses:
+        "204":
+          description: Successfully deleted the ShapeCollection
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+  /shapecollections/{shapeCollectionId}/geojson:
+    get:
+      operationId: getShapeCollectionFeatureCollection
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Get a GeoJSON FeatureCollection for a ShapeCollection
+      description: Get a GeoJSON FeatureCollection for a ShapeCollection
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+      responses:
+        "200":
+          description: Returns a GeoJSON FeatureCollection for the ShapeCollection
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                description: GeoJSON ShapeCollection
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    put:
+      operationId: replaceShapeCollectionFeatureCollection
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: GeoJSON FeatureCollection to replace existing GeoJSON FeatureCollection with
+              additionalProperties: true
+      summary: Replace GeoJSON FeatureCollection
+      description: |
+        Replace GeoJSON FeatureCollection. Note that this will replace all shapes and generate new IDs for all shapes.
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+      responses:
+        "200":
+          description: Returns updated GeoJSON FeatureCollection
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Newly replaced GeoJSON Feature
+                additionalProperties: true
+        "400":
+          description: Bad request when trying to replace GeoJSON Feature
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection or GeoJSON Feature found with given IDs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+  /shapecollections/{shapeCollectionId}/shapes:
+    get:
+      operationId: getShapeCollectionShapes
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Get Shapes for a ShapeCollection
+      description: Get Shapes for a ShapeCollection
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+      responses:
+        "200":
+          description: Returns Shapes for the ShapeCollection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShapeResponseArray"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection found with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    post:
+      operationId: createShapeCollectionFeature
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewShapeRequest"
+      summary: Create new GeoJSON Feature
+      description: Create new GeoJSON Feature
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+      responses:
+        "200":
+          description: Returns newly created GeoJSON Feature
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Newly created GeoJSON Feature
+                additionalProperties: true
+        "400":
+          description: Bad request when trying to create GeoJSON Feature
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection with given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+  /shapecollections/{shapeCollectionId}/shapes/{shapeId}:
+    get:
+      operationId: getShape
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Get Shape
+      description: Get Shape
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+        - $ref: "#/components/parameters/ShapeParameter"
+      responses:
+        "200":
+          description: Returns Shape
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShapeResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection or GeoJSON Feature found with given IDs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    delete:
+      operationId: deleteShape
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Delete a Shape
+      description: Delete a Shape
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+        - $ref: "#/components/parameters/ShapeParameter"
+      responses:
+        "204":
+          description: Successfully deleted ShapeCollection Feature
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection or GeoJSON Feature found with given IDs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+  /shapecollections/{shapeCollectionId}/shapes/{shapeId}/geojson:
+    get:
+      operationId: getShapeFeature
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      summary: Get Shape GeoJSON Feature
+      description: Get Shape GeoJSON Feature
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+        - $ref: "#/components/parameters/ShapeParameter"
+      responses:
+        "200":
+          description: Returns GeoJSON Feature
+          content:
+            application/json:
+              schema:
+                type: object
+                description: GeoJSON Feature
+                additionalProperties: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection or GeoJSON Feature found with given IDs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+    put:
+      operationId: replaceShapeCollectionFeature
+      security:
+        - APIToken: []
+      tags:
+        - ShapeCollection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditShapeRequest"
+      summary: Replace Shape GeoJSON Feature
+      description: Replace Shape GeoJSON Feature
+      parameters:
+        - $ref: "#/components/parameters/ShapeCollectionPathParameter"
+        - $ref: "#/components/parameters/ShapeParameter"
+      responses:
+        "200":
+          description: Returns updated GeoJSON Feature
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Updated GeoJSON Feature
+                additionalProperties: true
+        "400":
+          description: Bad request when trying to replace GeoJSON Feature
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "404":
+          description: No ShapeCollection or GeoJSON Feature found with given IDs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"

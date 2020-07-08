@@ -1,0 +1,25 @@
+CollectionResponse:
+  type: object
+  description: CollectionResponse is the response you get when interacting with the Collection API
+  properties:
+    id:
+      type: integer
+      format: int64
+      example: 1
+      description: The ID of the Collection
+    name:
+      type: string
+      example: My collection name
+      description: Name of the Collection
+    description:
+      type: string
+      example: My collection description
+      description: Description of the Collection
+  required:
+    - id
+    - name
+    - description
+CollectionResponseArray:
+  type: array
+  items:
+    $ref: "#/CollectionResponse"

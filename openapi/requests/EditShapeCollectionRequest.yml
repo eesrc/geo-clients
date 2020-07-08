@@ -1,0 +1,20 @@
+EditShapeCollectionRequest:
+  type: object
+  properties:
+    teamId:
+      type: integer
+      format: int64
+      example: 1
+      description: The updated Team ID of the ShapeCollection
+    name:
+      type: string
+      example: My shape collection
+      description: The updated name of the ShapeCollection
+    description:
+      type: string
+      example: My shape collection description
+      description: The updated description of the ShapeCollection
+  required:
+    - teamId
+    - name
+    - description

@@ -1,0 +1,19 @@
+UnauthorizedResponse:
+  type: object
+  properties:
+    title:
+      type: string
+      example: Unauthorized
+      description: Title representation of the error type
+    status:
+      type: integer
+      example: 401
+      description: Number representation of the error type
+    type:
+      type: string
+      example: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+      description: Link to information about the error type
+  required:
+    - title
+    - status
+    - type

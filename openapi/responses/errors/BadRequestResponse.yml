@@ -1,0 +1,25 @@
+BadRequestResponse:
+  type: object
+  properties:
+    title:
+      type: string
+      example: Bad request
+      description: Title representation of the error type
+    status:
+      type: integer
+      example: 400
+      description: Number representation of the error type
+    type:
+      type: string
+      example: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+      description: Link to information about the error type
+    details:
+      type: array
+      items:
+        $ref: "./ErrorDetail.yml#/ErrorDetail"
+      description: A list of error details corresponding to the error of the request
+  required:
+    - title
+    - status
+    - type
+    - details

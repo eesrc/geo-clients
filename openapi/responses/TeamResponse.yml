@@ -1,0 +1,26 @@
+TeamResponse:
+  type: object
+  description: TeamResponse is the response you get when interacting with the Team API
+  properties:
+    id:
+      type: integer
+      format: int64
+      example: 1
+      description: The ID of the Team
+    name:
+      type: string
+      example: Team name
+      description: Name of the Team
+    description:
+      type: string
+      example: Team description
+      description: Description of the Team
+  required:
+    - id
+    - name
+    - description
+TeamResponseArray:
+  type: array
+  description: TeamResponseArray is a list of `TeamResponse` you get when interacting with the Team API
+  items:
+    $ref: "#/TeamResponse"

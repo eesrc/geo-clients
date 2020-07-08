@@ -1,0 +1,6 @@
+{
+  "npmName": "@exploratoryengineering/geoclient-ts-fetch",
+  "npmVersion": "0.1.0",
+  "supportsES6": true,
+  "typescriptThreePlus": true
+}

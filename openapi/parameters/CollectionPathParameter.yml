@@ -1,0 +1,9 @@
+CollectionPathParameter:
+  in: path
+  name: collectionId
+  schema:
+    type: integer
+    format: int64
+    example: 1
+  required: true
+  description: The ID of the Collection

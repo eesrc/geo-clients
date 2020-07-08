@@ -1,0 +1,35 @@
+ShapeResponse:
+  type: object
+  description: ShapeResponse is the response you get when interacting with the ShapeCollection API
+  properties:
+    id:
+      type: integer
+      format: int64
+      example: 1
+      description: The ID of the Shape
+    shapeCollectionId:
+      type: integer
+      format: int64
+      example: 1
+      description: The ShapeCollection ID of the Shape
+    name:
+      type: string
+      example: My shape
+      description: The name of the Shape, derived from the GeoJSON feature
+    properties:
+      type: object
+      additionalProperties: true
+      description: The properties connected to the Shape, derived from GeoJSON feature
+      example:
+        name: My shape
+        foo: bar
+  required:
+    - id
+    - shapeCollectionId
+    - name
+    - properties
+
+ShapeResponseArray:
+  type: array
+  items:
+    $ref: "#/ShapeResponse"

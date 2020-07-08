@@ -1,0 +1,15 @@
+EditTeamRequest:
+  type: object
+  description: EditTeamRequest is a object to be used when updating a Team
+  properties:
+    name:
+      type: string
+      example: My updated Team name
+      description: The updated name of the Team
+    description:
+      type: string
+      example: My updated Team description
+      description: The updated description of the Team
+  required:
+    - name
+    - description

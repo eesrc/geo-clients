@@ -1,0 +1,75 @@
+PositionResponse:
+  type: object
+  description: PositionResponse is the response you get when interacting with the Position API
+  properties:
+    id:
+      type: integer
+      format: int64
+      example: 1
+      description: The ID of the Position
+    trackerId:
+      type: integer
+      format: int64
+      example: 1
+      description: The ID of the Tracker the position belongs to
+    timestamp:
+      type: integer
+      format: int64
+      example: 1572863612594
+      description: The UNIX timestamp of the position. If omitted, server timestamp will be used.
+    lat:
+      type: number
+      example: 63.421506
+      minimum: -90
+      maximum: 90
+      description: Latitude of the position
+    lng:
+      type: number
+      example: 10.437785
+      minimum: -180
+      maximum: 180
+      description: Longitude of the position
+    alt:
+      type: number
+      example: 96.123
+      description: Altitude of the position
+    heading:
+      type: number
+      example: 90
+      minimum: 0
+      maximum: 360
+      description: Heading in degrees
+    speed:
+      type: number
+      example: 12.9
+      minimum: 0
+      description: Speed in knots
+    precision:
+      type: number
+      example: 0.75
+      minimum: 0
+      maximum: 1
+      default: 1
+      description: Normalized precision between 0..1
+    payload:
+      type: string
+      format: byte
+      example: aHR0cDovL2xvcmVtcGl4ZWwuY29tLzY0MC80ODAvY2F0cw==
+      maximum: 10000
+      description: Arbritary payload connected to the position. Max size of 10 KB.
+  required:
+    - id
+    - trackerId
+    - timestamp
+    - lat
+    - lng
+    - alt
+    - heading
+    - speed
+    - precision
+    - payload
+
+PositionResponseArray:
+  type: array
+  items:
+    $ref: "#/PositionResponse"

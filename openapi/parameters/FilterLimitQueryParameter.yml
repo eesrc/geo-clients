@@ -1,0 +1,13 @@
+FilterLimitQueryParameter:
+  in: query
+  name: limit
+  schema:
+    type: integer
+    format: int64
+    description: The max number of responses returned
+    example: 1000
+    default: 255
+    minimum: 1
+    maximum: 2500
+  required: false
+  description: Limit number of responses (default 255, max 2500)

@@ -1,0 +1,23 @@
+SubscriptionConfidenceTypeArray:
+  type: array
+  description: |
+    The confidence level of which the Subscription should trigger. The value is provided with the
+    position and is a normalized value from `0..1`
+
+    * `low`: Low means a confidence of `[0 .. 0.4]`
+    * `medium`: Medium means a confidence of `(0.4 .. 0.8]`
+    * `high`: High means a confidence of `(0.8 .. 1]`
+  items:
+    $ref: "#/SubscriptionConfidenceType"
+  example:
+    - medium
+    - high
+
+SubscriptionConfidenceType:
+  type: string
+  enum:
+    - low
+    - medium
+    - high
+  example:
+    - medium

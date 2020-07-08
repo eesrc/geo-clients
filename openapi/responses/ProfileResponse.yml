@@ -1,0 +1,43 @@
+ProfileResponse:
+  type: object
+  description: ProfileResponse is the response you get when interacting with the Profile API
+  properties:
+    id:
+      type: integer
+      format: int64
+      example: 1
+      description: The ID of the Profile
+    name:
+      type: string
+      example: Long John Johnson
+      description: Name of the user connected to the Profile
+    email:
+      type: string
+      format: email
+      example: long.john@example.com
+      description: The email of the user connected to the Profile
+    emailVerified:
+      type: boolean
+      example: true
+      description: Whether the email has been verified for the user
+    phone:
+      type: string
+      example: 0118-999-881-999-119-725-3
+      description: The phone number of the user connected to the Profile
+    phoneNumberVerified:
+      type: boolean
+      example: true
+      description: Whether the phone number has been verified for the user
+    created:
+      type: string
+      format: date
+      example: 2020-02-10T13:49:22.771628958Z
+      description: The date of the Profile creation
+  required:
+    - id
+    - name
+    - email
+    - emailVerified
+    - phone
+    - phoneNumberVerified
+    - created

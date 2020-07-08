@@ -1,0 +1,9 @@
+APIToken:
+  type: apiKey
+  name: X-API-Token
+  in: header
+  description: |
+    ### Authorization through token
+    A way of authorizing yourself towards the API is using an API token. The token is aquired
+    by using the UI which will generate a personal token which represents you as a user. This
+    token can in turn be used for programmatical access towards all the APIs.

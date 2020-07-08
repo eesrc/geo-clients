@@ -1,0 +1,10 @@
+FilterSinceQueryParameter:
+  in: query
+  name: since
+  schema:
+    type: integer
+    format: int64
+    example: 0
+    minimum: 0
+  required: false
+  description: Fetch data since given UNIX timestamp

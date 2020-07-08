@@ -1,0 +1,39 @@
+{
+  "name": "@exploratoryengineering/geo-clients",
+  "version": "0.1.0",
+  "description": "Repository for generating clients from an OpenAPI specification",
+  "main": "index.js",
+  "scripts": {
+    "start": "redoc-cli serve openapi/GeoOAS3.yml --ssr --watch --options.theme.colors.primary.main=#007ad0 --options.hideDownloadButton=true",
+    "build": "npm run bundle && npm run generate:openapi",
+    "bundle": "redoc-cli bundle openapi/GeoOAS3.yml --title Geo Documentation --options.theme.colors.primary.main=#007ad0 --o specifications/index.html",
+    "validate": "openapi-generator validate -i openapi/GeoOAS3.yml && openapi validate openapi/GeoOAS3.yml",
+    "generate:openapi": "mkdirp specifications && npm run bundle:OAS3YAML && npm run convert:OAS3JSON && npm run convert:SWAGGER2JSON && npm run convert:SWAGGER2YAML",
+    "bundle:OAS3YAML": "openapi bundle openapi/GeoOAS3.yml --output specifications/openapi3.yml",
+    "convert:OAS3JSON": "api-spec-converter -f openapi_3 -t openapi_3 --syntax=json --check specifications/openapi3.yml > specifications/openapi3.json",
+    "convert:SWAGGER2JSON": "api-spec-converter -f openapi_3 -t swagger_2 --syntax=json --check specifications/openapi3.yml > specifications/swagger2.json",
+    "convert:SWAGGER2YAML": "api-spec-converter -f openapi_3 -t swagger_2 --syntax=yaml --check specifications/openapi3.yml > specifications/swagger2.yml",
+    "ts-fetch": "npm run clean:ts-fetch && npm run generate:ts-fetch && npm run install:ts-fetch",
+    "clean:ts-fetch": "rimraf clients/geoclient-ts-fetch",
+    "generate:ts-fetch": "openapi-generator generate -i ./specifications/openapi3.yml -g typescript-fetch -o clients/geoclient-ts-fetch -c configs/ts-fetch-client-config.json",
+    "install:ts-fetch": "cd clients/geoclient-ts-fetch && npm i",
+    "clean:dart": "rimraf clients/geoclient-dart",
+    "generate:dart": "openapi-generator generate -i ./specifications/openapi3.yml -g dart -o clients/geoclient-dart -c configs/dart-client-config.json",
+    "clean:go": "rimraf clients/geoclient-go",
+    "generate:go": "openapi-generator generate -i ./specifications/openapi3.yml -g go -o clients/geoclient-go -c configs/go-client-config.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@ghe.telenordigital.com:iot/geo-clients.git"
+  },
+  "author": "Per Kristian Kummermo",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "1.0.10-4.2.3",
+    "@redocly/openapi-cli": "0.12.1",
+    "api-spec-converter": "2.11.0",
+    "mkdirp": "^1.0.3",
+    "redoc-cli": "0.9.7",
+    "rimraf": "^3.0.2"
+  }
+}

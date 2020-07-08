@@ -1,0 +1,61 @@
+EditSubscriptionRequest:
+  type: object
+  properties:
+    teamId:
+      type: integer
+      description: The Team ID of the Subscription
+      format: int64
+      example: 1
+    name:
+      type: string
+      description: The updated name of the Subscription
+      example: My subscription name
+    description:
+      type: string
+      description: The updated description of the Subscription
+      example: My subscription description
+    active:
+      type: boolean
+      description: Updated boolean showing whether the subscription is active
+      example: false
+    output:
+      $ref: ../GeoOAS3.yml#/components/schemas/SubscriptionOutput
+    triggerCriteria:
+      type: object
+      description: The trigger criterias for a Subscription
+      properties:
+        triggerTypes:
+          $ref: ../enums/SubscriptionTriggerType.yml#/SubscriptionTriggerTypeArray
+        confidence:
+          $ref: ../enums/SubscriptionConfidenceType.yml#/SubscriptionConfidenceTypeArray
+      required:
+        - triggerTypes
+        - confidence
+    shapeCollectionId:
+      type: integer
+      format: int64
+      description: The ID of the ShapeCollection containing shapes to subscribe to
+      example: 1
+    trackable:
+      type: object
+      description: Details of which entities the subscription tracks
+      properties:
+        id:
+          type: number
+          format: int64
+          description: The ID of the trackable entity
+          example: 1
+        type:
+          $ref: ../enums/SubscriptionTrackerType.yml#/SubscriptionTrackerType
+      required:
+        - id
+        - type
+  required:
+    - teamId
+    - name
+    - description
+    - active
+    - output
+    - triggerCriteria
+    - trackable
+    - shapeCollectionId

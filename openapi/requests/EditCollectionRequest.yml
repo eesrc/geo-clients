@@ -1,0 +1,21 @@
+EditCollectionRequest:
+  type: object
+  description: A EditCollectionRequest is used when editing a Collection
+  properties:
+    name:
+      type: string
+      example: My updated Collection name
+      description: The updated name of the Collection
+    description:
+      type: string
+      example: My updated Collection description
+      description: The updated Collection description
+    teamId:
+      type: integer
+      format: int64
+      example: 1
+      description: The Team ID of the Collection
+  required:
+    - teamId
+    - name
+    - description
